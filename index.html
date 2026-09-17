@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Monday Dev Sync</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#f4f2ee; --surface:#ffffff; --surface-2:#faf8f4;
+    --ink:#221f1b; --muted:#6d685f; --faint:#98928a;
+    --line:#e6e2d9; --line-strong:#d8d3c8;
+    --accent:#a5122e; --accent-soft:#f7e5e6;
+    --done:#2f8f4e; --done-soft:#e7f2ea;
+    --btn-bg:#a5122e; --btn-done:#2f8f4e;
+    --focus:#a5122e;
+    --shadow:0 1px 2px rgba(34,31,27,.05), 0 6px 18px rgba(34,31,27,.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#171512; --surface:#211e1a; --surface-2:#1b1815;
+      --ink:#f0ece4; --muted:#a8a196; --faint:#7d766c;
+      --line:#332e28; --line-strong:#403a32;
+      --accent:#f0839a; --accent-soft:#3a1f26;
+      --done:#6fce93; --done-soft:#1e2e24;
+      --btn-bg:#b83350; --btn-done:#2e7d4a;
+      --focus:#f0839a;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 22px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#171512; --surface:#211e1a; --surface-2:#1b1815;
+    --ink:#f0ece4; --muted:#a8a196; --faint:#7d766c;
+    --line:#332e28; --line-strong:#403a32;
+    --accent:#f0839a; --accent-soft:#3a1f26;
+    --done:#6fce93; --done-soft:#1e2e24;
+    --btn-bg:#b83350; --btn-done:#2e7d4a;
+    --focus:#f0839a;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+  body{background:var(--bg);color:var(--ink);
+    font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.5}
+  .wrap{max-width:660px;margin:0 auto;
+    padding-left:max(18px,env(safe-area-inset-left));
+    padding-right:max(18px,env(safe-area-inset-right));
+    padding-block:22px 64px}
+
+  header{position:sticky;top:0;z-index:5;
+    background:linear-gradient(var(--bg) 78%, transparent);
+    padding-top:max(6px,env(safe-area-inset-top));padding-bottom:12px;margin-bottom:8px}
+  .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);font-weight:600}
+  .titlerow{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:3px}
+  h1{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:29px;
+    line-height:1.05;margin:0;letter-spacing:-.01em;text-wrap:balance}
+  .week{font-size:12.5px;color:var(--muted);white-space:nowrap;
+    font-variant-numeric:tabular-nums;padding-top:4px}
+  .bar{display:flex;align-items:center;gap:12px;margin-top:14px}
+  .track{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+  .fill{height:100%;width:0;border-radius:99px;
+    background:linear-gradient(90deg,var(--accent),var(--done));
+    transition:width .35s cubic-bezier(.4,0,.2,1)}
+  .count{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;
+    font-weight:600;white-space:nowrap;min-width:38px;text-align:right}
+  .reset{appearance:none;border:1px solid var(--line-strong);background:var(--surface);
+    color:var(--muted);font:inherit;font-size:12px;font-weight:600;
+    padding:5px 11px;border-radius:8px;cursor:pointer}
+  .reset:hover{color:var(--ink);border-color:var(--muted)}
+  .reset:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+  .sec{margin-top:22px}
+  .sec-head{display:flex;align-items:baseline;gap:8px;margin:0 2px 9px}
+  .sec-head .k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:700;color:var(--muted)}
+  .sec-head .sub{font-size:12px;color:var(--faint)}
+
+  ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+
+  .item{display:block;background:var(--surface);border:1px solid var(--line);
+    border-radius:13px;box-shadow:var(--shadow);cursor:pointer;
+    transition:border-color .15s, background .15s}
+  .item:hover{border-color:var(--line-strong)}
+  .item:focus-within{outline:2px solid var(--focus);outline-offset:2px}
+  .item input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+  .row{display:grid;grid-template-columns:auto auto 1fr;gap:12px;align-items:start;padding:14px 15px}
+  .box{margin-top:1px;width:23px;height:23px;border-radius:7px;flex:none;
+    border:2px solid var(--line-strong);background:var(--surface-2);
+    display:grid;place-items:center;transition:.15s}
+  .box svg{width:14px;height:14px;stroke:#fff;stroke-width:3.4;fill:none;
+    stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:22;stroke-dashoffset:22;transition:stroke-dashoffset .2s ease .02s}
+  .num{width:23px;height:23px;border-radius:7px;flex:none;display:grid;place-items:center;
+    font-size:12.5px;font-weight:700;color:var(--accent);background:var(--accent-soft);
+    font-variant-numeric:tabular-nums}
+  .no-num{visibility:hidden}
+  .body .t{font-weight:600;font-size:15px;letter-spacing:-.005em}
+  .body .d{color:var(--muted);font-size:13px;line-height:1.45;margin-top:3px}
+  .body .d b{color:var(--ink);font-weight:600}
+  .chip{display:inline-flex;align-items:center;gap:4px;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:6px;
+    padding:1px 7px;font-size:12px;font-weight:600;color:var(--ink);
+    white-space:nowrap;line-height:1.7}
+
+  .item.done{background:var(--surface-2)}
+  .item.done .box{background:var(--done);border-color:var(--done)}
+  .item.done .box svg{stroke-dashoffset:0}
+  .item.done .body .t{color:var(--faint);text-decoration:line-through;text-decoration-color:var(--line-strong)}
+  .item.done .body .d{opacity:.55}
+  .item.done .num{background:var(--done-soft);color:var(--done)}
+
+  .scale{margin-top:22px;background:var(--surface);border:1px solid var(--line);
+    border-radius:13px;box-shadow:var(--shadow);padding:15px 16px}
+  .scale h2{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:16px;margin:0 0 3px}
+  .scale .lead{font-size:12.5px;color:var(--muted);margin:0 0 12px}
+  .scale dl{display:flex;flex-direction:column;gap:1px;margin:0}
+  .scale .r{display:grid;grid-template-columns:30px 1fr;gap:12px;
+    padding:7px 0;border-top:1px solid var(--line);align-items:baseline}
+  .scale .r:first-child{border-top:0}
+  .scale dt{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:17px;
+    color:var(--accent);font-variant-numeric:tabular-nums}
+  .scale dd{margin:0;font-size:13px;color:var(--ink)}
+  .scale .r.split dt,.scale .r.split dd{color:var(--muted)}
+
+  .finish{display:flex;align-items:center;justify-content:center;gap:9px;
+    width:100%;margin-top:22px;padding:15px;border-radius:13px;border:0;
+    background:var(--btn-bg);color:#fff;font:inherit;font-weight:700;font-size:15px;
+    cursor:pointer;box-shadow:var(--shadow);transition:background .2s, filter .15s}
+  .finish:hover{filter:brightness(1.06)}
+  .finish:active{transform:translateY(1px)}
+  .finish:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+  .finish.saved{background:var(--btn-done)}
+  .finish svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.6;
+    stroke-linecap:round;stroke-linejoin:round}
+
+  .hist{margin-top:20px}
+  details{margin:0}
+  summary{list-style:none;cursor:pointer}
+  summary::-webkit-details-marker{display:none}
+  .hist>summary{display:flex;align-items:center;gap:8px;padding:8px 2px;
+    font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+  .caret{display:inline-block;width:8px;height:8px;border-right:2px solid var(--faint);
+    border-bottom:2px solid var(--faint);transform:rotate(-45deg);transition:transform .15s;margin-right:2px}
+  details[open]>summary .caret{transform:rotate(45deg)}
+  .entry{background:var(--surface);border:1px solid var(--line);border-radius:11px;
+    margin-top:8px;box-shadow:var(--shadow)}
+  .entry>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px}
+  .entry .lbl{color:var(--ink);font-weight:600;font-size:14px}
+  .entry .cnt{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .entry .items{padding:2px 14px 13px;display:flex;flex-direction:column;gap:7px;
+    border-top:1px solid var(--line);margin-top:0}
+  .hi{display:grid;grid-template-columns:16px 1fr;gap:9px;font-size:13px;align-items:start}
+  .hi .m{color:var(--done);font-weight:800;line-height:1.35}
+  .hi .m.off{color:var(--faint)}
+  .hi .tx{color:var(--muted)}
+  .hi.on .tx{color:var(--ink)}
+  .empty{font-size:13px;color:var(--faint);padding:6px 2px}
+
+  footer{margin-top:22px;text-align:center;color:var(--faint);font-size:11.5px;line-height:1.6}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Blossom &middot; Weekly</div>
+    <div class="titlerow">
+      <h1>Monday Dev Sync</h1>
+      <span class="week" id="week">&mdash;</span>
+    </div>
+    <div class="bar">
+      <div class="track"><div class="fill" id="fill"></div></div>
+      <span class="count" id="count">0/10</span>
+      <button class="reset" id="reset" type="button">Reset</button>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="sec-head"><span class="k">Before &middot; on your own</span></div>
+    <ul id="prep"></ul>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><span class="k">In the meeting</span><span class="sub">run top&#8209;to&#8209;bottom</span></div>
+    <ul id="meeting"></ul>
+  </section>
+
+  <div class="scale">
+    <h2>Estimate scale</h2>
+    <p class="lead">Fibonacci &middot; anchor to one known issue &middot; round up when unsure &middot; estimate leaves, not epics.</p>
+    <dl>
+      <div class="r"><dt>1</dt><dd>Trivial, no unknowns &mdash; ~an hour</dd></div>
+      <div class="r"><dt>2</dt><dd>Small &amp; well understood &mdash; up to ~half a day</dd></div>
+      <div class="r"><dt>3</dt><dd>Moderate &mdash; roughly a day</dd></div>
+      <div class="r"><dt>5</dt><dd>Substantial &mdash; multi&#8209;day, some unknowns</dd></div>
+      <div class="r"><dt>8</dt><dd>Large &mdash; most of a week, real complexity</dd></div>
+      <div class="r split"><dt>13</dt><dd>Very large &mdash; plan to split it</dd></div>
+      <div class="r split"><dt>21</dt><dd>Too big &mdash; break it down first</dd></div>
+    </dl>
+  </div>
+
+  <button class="finish" id="finish" type="button">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7L9.5 17.5 4 12"/></svg>
+    <span id="finishlbl">Finish &amp; save this week</span>
+  </button>
+
+  <details class="hist" id="hist">
+    <summary><span class="caret"></span><span id="histlbl">Past weeks</span></summary>
+    <div id="histlist"></div>
+  </details>
+
+  <footer>Saves on this device &middot; each new week starts clean automatically.</footer>
+</div>
+
+<script>
+(function(){
+  var PREP = [
+    {id:'p1', t:'Assess initiative health',
+     d:'Ask Claude &ldquo;assess initiative health&rdquo; &rarr; paste-ready &#128994;/&#128993;/&#128308; + 2&ndash;3 lines per initiative (ADM &middot; CCC &middot; Pinpoint &middot; Blossom&nbsp;V2). Paste each into that initiative&rsquo;s <b>Update</b>.'},
+    {id:'p2', t:'Get the scorecard numbers',
+     d:'Ask Claude for <b>#6</b> issues completed &middot; <b>#6a</b> median cycle time &middot; <b>#7</b> open bugs &rarr; type into the Sheet. <b>#8</b> = % of the 4 initiatives On&nbsp;track.'}
+  ];
+  var MEETING = [
+    {id:'m1', t:'Clear the Triage queue',
+     d:'support@ emails + Help&nbsp;Center form tickets &rarr; accept/decline. On accept set <b>project &middot; assignee &middot; labels</b>.'},
+    {id:'m2', t:'Review what&rsquo;s in flight',
+     d:'<span class="chip">&#128269; Active work by developer</span> <span class="chip">&#128269; Stalled</span><br>Who&rsquo;s on what &mdash; anyone buried or idle? Rebalance. Stalled &gt;~1&nbsp;wk: <b>unblock / re-scope / drop</b>. Same pass = carryover: <b>keep / re-scope / drop</b> before adding.'},
+    {id:'m3', t:'Clear the review bottleneck',
+     d:'<span class="chip">&#128269; Review queue</span> (oldest first) &mdash; get long-sitting reviews merged <b>before</b> pulling new work.'},
+    {id:'m4', t:'Plan this cycle',
+     d:'Pull ~<b>10&ndash;15</b> issues into the current cycle.'},
+    {id:'m5', t:'Make every cycle issue complete',
+     d:'<b>estimate &middot; assignee &middot; project &middot; priority.</b> Drive <span class="chip">&#128269; Cycle: missing estimate</span> to <b>zero</b> (Shift+E).'},
+    {id:'m6', t:'Status hygiene',
+     d:'Link the PR (auto-moves status); non-code issues moved by hand <b>(draft/open PR &rarr; In Progress &middot; review &rarr; In Review &middot; merge &rarr; Done)</b>; <b>never skip to Done.</b>'},
+    {id:'m7', t:'Close out',
+     d:'Confirm required fields on new issues &middot; glance <span class="chip">&#128269; Insights</span> (throughput / cycle-time trend) &middot; <b>post initiative Health</b> + confirm scorecard entered for L10.'},
+    {id:'m8', t:'Review Initiatives &amp; Projects health',
+     d:'Open <span class="chip">Initiatives &rarr; Projects</span> &mdash; skim each initiative and its projects: are the <b>health colours</b> and <b>target dates</b> still right? Fix any that have drifted.'}
+  ];
+
+  var ALL = PREP.concat(MEETING);
+  var KEY = 'blossom-monday-checklist';
+  var HKEY = 'blossom-monday-history';
+
+  function isoWeek(dt){
+    var d = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()));
+    var day = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - day);
+    var ys = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    var wn = Math.ceil((((d - ys) / 86400000) + 1) / 7);
+    return d.getUTCFullYear() + '-W' + String(wn).padStart(2, '0');
+  }
+  function mondayLabel(dt){
+    var x = new Date(dt); var off = (x.getDay() + 6) % 7;
+    x.setDate(x.getDate() - off);
+    return 'Week of ' + x.toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'});
+  }
+
+  var now = new Date();
+  var wk = isoWeek(now);
+  var state = {};
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw){ var o = JSON.parse(raw); if(o && o.week === wk && o.checked) state = o.checked; }
+    }catch(e){ state = {}; }
+  }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify({week:wk, checked:state})); }catch(e){} }
+  function loadHist(){ try{ return JSON.parse(localStorage.getItem(HKEY)||'{}')||{}; }catch(e){ return {}; } }
+  function saveHist(h){ try{ localStorage.setItem(HKEY, JSON.stringify(h)); }catch(e){} }
+
+  var CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6"/></svg>';
+
+  function makeItem(it, numbered, n){
+    var li = document.createElement('li');
+    var label = document.createElement('label');
+    label.className = 'item';
+    label.setAttribute('for', it.id);
+    var numHtml = numbered ? '<span class="num">'+n+'</span>' : '<span class="num no-num"></span>';
+    label.innerHTML =
+      '<input type="checkbox" id="'+it.id+'">' +
+      '<div class="row"><span class="box">'+CHECK+'</span>'+numHtml+
+      '<span class="body"><span class="t">'+it.t+'</span><span class="d">'+it.d+'</span></span></div>';
+    var input = label.querySelector('input');
+    input.checked = !!state[it.id];
+    if(input.checked) label.classList.add('done');
+    input.addEventListener('change', function(){
+      if(input.checked){ state[it.id] = 1; label.classList.add('done'); }
+      else { delete state[it.id]; label.classList.remove('done'); }
+      save(); render(); unmarkSaved();
+    });
+    li.appendChild(label);
+    return li;
+  }
+
+  function build(){
+    var pe = document.getElementById('prep');
+    PREP.forEach(function(it){ pe.appendChild(makeItem(it, false)); });
+    var me = document.getElementById('meeting');
+    MEETING.forEach(function(it, i){ me.appendChild(makeItem(it, true, i+1)); });
+  }
+  function render(){
+    var done = ALL.filter(function(it){ return state[it.id]; }).length;
+    document.getElementById('count').textContent = done + '/' + ALL.length;
+    document.getElementById('fill').style.width = (done/ALL.length*100) + '%';
+  }
+
+  var finishBtn = document.getElementById('finish');
+  var finishLbl = document.getElementById('finishlbl');
+  function unmarkSaved(){
+    if(finishBtn.classList.contains('saved')){
+      finishBtn.classList.remove('saved');
+      finishLbl.textContent = 'Finish & save this week';
+    }
+  }
+
+  function renderHistory(){
+    var h = loadHist();
+    var keys = Object.keys(h).sort().reverse();
+    document.getElementById('histlbl').textContent = 'Past weeks' + (keys.length ? ' ('+keys.length+')' : '');
+    var wrap = document.getElementById('histlist');
+    wrap.innerHTML = '';
+    if(!keys.length){ wrap.innerHTML = '<div class="empty">No saved weeks yet &mdash; finish a meeting and tap the button above.</div>'; return; }
+    keys.forEach(function(k){
+      var e = h[k];
+      var det = document.createElement('details');
+      det.className = 'entry';
+      var items = (e.items||[]).map(function(it){
+        return '<div class="hi '+(it.done?'on':'')+'"><span class="m '+(it.done?'':'off')+'">'+(it.done?'✓':'–')+'</span><span class="tx">'+it.t+'</span></div>';
+      }).join('');
+      det.innerHTML =
+        '<summary><span class="lbl">'+e.label+'</span><span class="cnt">'+e.done+'/'+e.total+' done</span></summary>' +
+        '<div class="items">'+items+'</div>';
+      wrap.appendChild(det);
+    });
+  }
+
+  finishBtn.addEventListener('click', function(){
+    var h = loadHist();
+    var done = ALL.filter(function(it){ return state[it.id]; }).length;
+    h[wk] = {
+      week: wk, label: mondayLabel(now), savedAt: Date.now(),
+      done: done, total: ALL.length,
+      items: ALL.map(function(it){ return {t: it.t, done: !!state[it.id]}; })
+    };
+    saveHist(h);
+    renderHistory();
+    finishBtn.classList.add('saved');
+    finishLbl.textContent = 'Saved to History ✓';
+    try{ document.getElementById('hist').open = true; }catch(e){}
+  });
+
+  document.getElementById('reset').addEventListener('click', function(){
+    state = {}; save();
+    var boxes = document.querySelectorAll('.item input');
+    for(var i=0;i<boxes.length;i++){ boxes[i].checked = false; boxes[i].closest('.item').classList.remove('done'); }
+    render(); unmarkSaved();
+  });
+
+  load();
+  document.getElementById('week').textContent = mondayLabel(now);
+  build();
+  render();
+  renderHistory();
+})();
+</script>
+</body>
+</html>
