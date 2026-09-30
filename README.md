@@ -5,7 +5,7 @@
 <h1 align="center">Blossom · Monday Dev Sync</h1>
 
 <p align="center">
-  <strong><a href="https://elmlakelabs.github.io/blossom-monday-checklist/">Open the live checklist →</a></strong>
+  <strong><a href="https://blossom-ag.github.io/blossom-monday-checklist/">Open the live checklist →</a></strong>
 </p>
 
 A clickable weekly agenda for the Blossom Monday developer meeting — run it top-to-bottom, check items off as you go.
