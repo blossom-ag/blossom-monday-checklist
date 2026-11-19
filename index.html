@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Monday Dev Sync</title>
+<title>Monday Prep</title>
 <link rel="icon" href="blossom-logomark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -176,39 +176,21 @@
   <header>
     <div class="brand"><img src="blossom-logomark.svg" alt="Blossom" width="30" height="27"><span class="eyebrow">Blossom &middot; Weekly</span></div>
     <div class="titlerow">
-      <h1>Monday Dev Sync</h1>
+      <h1>Monday Prep</h1>
       <span class="week" id="week">&mdash;</span>
     </div>
     <div class="bar">
       <div class="track"><div class="fill" id="fill"></div></div>
-      <span class="count" id="count">0/10</span>
+      <span class="count" id="count">0/2</span>
       <button class="reset" id="reset" type="button">Reset</button>
     </div>
   </header>
 
   <section class="sec">
-    <div class="sec-head"><span class="k">Before &middot; on your own</span></div>
+    <div class="sec-head"><span class="k">Monday &middot; on your own</span><span class="sub">before the L10</span></div>
     <ul id="prep"></ul>
   </section>
 
-  <section class="sec">
-    <div class="sec-head"><span class="k">In the meeting</span><span class="sub">run top&#8209;to&#8209;bottom</span></div>
-    <ul id="meeting"></ul>
-  </section>
-
-  <div class="scale">
-    <h2>Estimate scale</h2>
-    <p class="lead">Fibonacci &middot; anchor to one known issue &middot; round up when unsure &middot; estimate leaves, not epics.</p>
-    <dl>
-      <div class="r"><dt>1</dt><dd>Trivial, no unknowns &mdash; ~an hour</dd></div>
-      <div class="r"><dt>2</dt><dd>Small &amp; well understood &mdash; up to ~half a day</dd></div>
-      <div class="r"><dt>3</dt><dd>Moderate &mdash; roughly a day</dd></div>
-      <div class="r"><dt>5</dt><dd>Substantial &mdash; multi&#8209;day, some unknowns</dd></div>
-      <div class="r"><dt>8</dt><dd>Large &mdash; most of a week, real complexity</dd></div>
-      <div class="r split"><dt>13</dt><dd>Very large &mdash; plan to split it</dd></div>
-      <div class="r split"><dt>21</dt><dd>Too big &mdash; break it down first</dd></div>
-    </dl>
-  </div>
 
   <button class="finish" id="finish" type="button">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7L9.5 17.5 4 12"/></svg>
@@ -220,7 +202,7 @@
     <div id="histlist"></div>
   </details>
 
-  <footer>Saves on this device &middot; each new week starts clean automatically.</footer>
+  <footer>Saves on this device &middot; each new week starts clean automatically.<br>The developer meeting agenda moved to <a href="https://blossom-ag.github.io/blossom-friday-dev-call/" style="color:inherit">Friday Dev Call</a>.</footer>
 </div>
 
 <script>
@@ -231,24 +213,7 @@
     {id:'p2', t:'Get the scorecard numbers',
      d:'Ask Claude for <b>#6</b> issues completed &middot; <b>#6a</b> median cycle time &middot; <b>#7</b> open bugs &rarr; type into the Sheet. <b>#8</b> = % of the 4 initiatives On&nbsp;track.'}
   ];
-  var MEETING = [
-    {id:'m1', t:'Clear the Triage queue',
-     d:'support@ emails + Help&nbsp;Center form tickets &rarr; accept/decline. On accept set <b>project &middot; assignee &middot; labels</b>.'},
-    {id:'m2', t:'Review what&rsquo;s in flight',
-     d:'<span class="chip">&#128269; Active work by developer</span> <span class="chip">&#128269; Stalled</span><br>Who&rsquo;s on what &mdash; anyone buried or idle? Rebalance. Stalled &gt;~1&nbsp;wk: <b>unblock / re-scope / drop</b>. Same pass = carryover: <b>keep / re-scope / drop</b> before adding.'},
-    {id:'m3', t:'Clear the review bottleneck',
-     d:'<span class="chip">&#128269; Review queue</span> (oldest first) &mdash; get long-sitting reviews merged <b>before</b> pulling new work.'},
-    {id:'m4', t:'Plan this cycle',
-     d:'Pull ~<b>10&ndash;15</b> issues into the current cycle.'},
-    {id:'m5', t:'Make every cycle issue complete',
-     d:'<b>estimate &middot; assignee &middot; project &middot; priority.</b> Drive <span class="chip">&#128269; Cycle: missing estimate</span> to <b>zero</b> (Shift+E).'},
-    {id:'m6', t:'Status hygiene',
-     d:'Link the PR (auto-moves status); non-code issues moved by hand <b>(draft/open PR &rarr; In Progress &middot; review &rarr; In Review &middot; merge &rarr; Done)</b>; <b>never skip to Done.</b>'},
-    {id:'m7', t:'Close out',
-     d:'Confirm required fields on new issues &middot; glance <span class="chip">&#128269; Insights</span> (throughput / cycle-time trend) &middot; <b>post initiative Health</b> + confirm scorecard entered for L10.'},
-    {id:'m8', t:'Review Initiatives &amp; Projects health',
-     d:'Open <span class="chip">Initiatives &rarr; Projects</span> &mdash; skim each initiative and its projects: are the <b>health colours</b> and <b>target dates</b> still right? Fix any that have drifted.'}
-  ];
+  var MEETING = [];
 
   var ALL = PREP.concat(MEETING);
   var KEY = 'blossom-monday-checklist';
@@ -309,8 +274,6 @@
   function build(){
     var pe = document.getElementById('prep');
     PREP.forEach(function(it){ pe.appendChild(makeItem(it, false)); });
-    var me = document.getElementById('meeting');
-    MEETING.forEach(function(it, i){ me.appendChild(makeItem(it, true, i+1)); });
   }
   function render(){
     var done = ALL.filter(function(it){ return state[it.id]; }).length;
@@ -333,7 +296,7 @@
     document.getElementById('histlbl').textContent = 'Past weeks' + (keys.length ? ' ('+keys.length+')' : '');
     var wrap = document.getElementById('histlist');
     wrap.innerHTML = '';
-    if(!keys.length){ wrap.innerHTML = '<div class="empty">No saved weeks yet &mdash; finish a meeting and tap the button above.</div>'; return; }
+    if(!keys.length){ wrap.innerHTML = '<div class="empty">No saved weeks yet &mdash; finish your prep and tap the button above.</div>'; return; }
     keys.forEach(function(k){
       var e = h[k];
       var det = document.createElement('details');
